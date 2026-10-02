@@ -1,4 +1,5 @@
 package pieces;
+import game.Board;
 
 import java.util.List;
 
@@ -30,6 +31,6 @@ public abstract class Piece {
         color = c;
     }
 
-    public abstract List<Position> possibleMoves();
+    public abstract List<Position> possibleMoves(Board board);
 
 }

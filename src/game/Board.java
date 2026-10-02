@@ -1,3 +1,5 @@
+package game;
+
 import pieces.*;
 
 public class Board {
@@ -5,6 +7,10 @@ public class Board {
 
     public Board() {
         initialize();
+    }
+
+    public Piece[][] getGrid() {
+        return grid;
     }
 
     public void initialize() {

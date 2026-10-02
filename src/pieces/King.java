@@ -1,4 +1,5 @@
 package pieces;
+import game.Board;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,26 +15,80 @@ public class King extends Piece{
         return symbol;
     }
 
-    public List<Position> possibleMoves(){
+    public List<Position> possibleMoves(Board board) {
         List<Position> moveList = new ArrayList<>();
-        moveList.add(new Position(this.getPosition().getRow() - 1,
-                                       this.getPosition().getCol())); // Move forward for white
-        moveList.add(new Position(this.getPosition().getRow() + 1,
-                                       this.getPosition().getCol())); // Move back for white
-        moveList.add(new Position(this.getPosition().getRow(),
-                                   this.getPosition().getCol() + 1)); // Move right for white
-        moveList.add(new Position(this.getPosition().getRow(),
-                                   this.getPosition().getCol() - 1)); // Move left for white
-        moveList.add(new Position(this.getPosition().getRow() - 1,
-                                   this.getPosition().getCol() + 1)); // Move up right diagonal for white
-        moveList.add(new Position(this.getPosition().getRow() - 1,
-                                   this.getPosition().getCol() - 1)); // Move up left diagonal for white
-        moveList.add(new Position(this.getPosition().getRow() + 1,
-                                   this.getPosition().getCol() + 1)); // Move down right diagonal for white
-        moveList.add(new Position(this.getPosition().getRow() + 1,
-                                   this.getPosition().getCol() - 1)); // Move down left diagonal for white
+        int r = this.getPosition().getRow();
+        int c = this.getPosition().getCol();
+
+        Piece[][] temp = board.getGrid();
+
+        // UP
+        if (r - 1 >= 0) {
+            Piece p = temp[r - 1][c];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r - 1, c));
+            }
+        }
+
+        // DOWN
+        if (r + 1 < 8) {
+            Piece p = temp[r + 1][c];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r + 1, c));
+            }
+        }
+
+        // RIGHT
+        if (c + 1 < 8) {
+            Piece p = temp[r][c + 1];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r, c + 1));
+            }
+        }
+
+        // LEFT
+        if (c - 1 >= 0) {
+            Piece p = temp[r][c - 1];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r, c - 1));
+            }
+        }
+
+        // UP-RIGHT
+        if (r - 1 >= 0 && c + 1 < 8) {
+            Piece p = temp[r - 1][c + 1];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r - 1, c + 1));
+            }
+        }
+
+        // UP-LEFT
+        if (r - 1 >= 0 && c - 1 >= 0) {
+            Piece p = temp[r - 1][c - 1];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r - 1, c - 1));
+            }
+        }
+
+        // DOWN-RIGHT
+        if (r + 1 < 8 && c + 1 < 8) {
+            Piece p = temp[r + 1][c + 1];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r + 1, c + 1));
+            }
+        }
+
+        // DOWN-LEFT
+        if (r + 1 < 8 && c - 1 >= 0) {
+            Piece p = temp[r + 1][c - 1];
+            if (p == null || !p.getColor().equals(this.getColor())) {
+                moveList.add(new Position(r + 1, c - 1));
+            }
+        }
 
         return moveList;
     }
+
+
 
 }
