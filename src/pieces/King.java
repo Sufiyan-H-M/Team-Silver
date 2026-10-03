@@ -86,8 +86,47 @@ public class King extends Piece{
             }
         }
 
+        // Remove moves that place king next to enemy king
+        List<Position> toRemove = new ArrayList<>();
+
+        for (Position pos : moveList) {
+            int nr = pos.getRow();
+            int nc = pos.getCol();
+
+            // Check all 8 surrounding squares for an enemy king
+            int[][] kingAdj = {
+                    { -1, -1 }, { -1, 0 }, { -1, 1 },
+                    {  0, -1 },           {  0, 1 },
+                    {  1, -1 }, {  1, 0 }, {  1, 1 }
+            };
+
+            for (int[] m : kingAdj) {
+                int ar = nr + m[0];
+                int ac = nc + m[1];
+
+                if (ar >= 0 && ar < 8 && ac >= 0 && ac < 8) {
+                    Piece p = temp[ar][ac];
+
+                    if (p != null &&
+                            !p.getColor().equals(this.getColor()) &&
+                            p.getSymbol().equals("k")) {
+
+                        // This move puts king next to enemy king → illegal
+                        toRemove.add(pos);
+                    }
+                }
+            }
+        }
+
+// Remove illegal king-adjacent moves
+        moveList.removeAll(toRemove);
+
         return moveList;
     }
+
+
+
+
 
 
 
