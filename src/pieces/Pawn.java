@@ -76,4 +76,11 @@ public class Pawn extends Piece{
         return moveList;
     }
 
+    // Rook.java
+    @Override
+    public Piece copy() {
+        return new Pawn(getPieceColor(),
+                new Position(getPosition().getRow(), getPosition().getCol()));
+    }
+
 }

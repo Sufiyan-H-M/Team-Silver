@@ -11,7 +11,7 @@ public class Main{
 
         while (true) {
 
-            board.printBoard();      // if you have this method
+            board.printBoard();
 
             System.out.println((turn.equals("w") ? "White" : "Black") + " to move.");
 
@@ -30,8 +30,16 @@ public class Main{
             String opponent = turn.equals("w") ? "b" : "w";
 
             if (board.isInCheck(opponent)) {
-                System.out.println((opponent.equals("w") ? "White" : "Black") + " is in CHECK!");
+
+                if (!board.hasAnyLegalMove(opponent)) {
+                    System.out.println("CHECKMATE! " + (turn.equals("b") ? "black" : "white") + " wins!");
+                    board.printBoard();
+                    break;
+                }
+
+                System.out.println(opponent + " is in CHECK!");
             }
+
 
             // Switch turn
             turn = opponent;

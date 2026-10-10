@@ -84,5 +84,12 @@ public class Knight extends Piece{
     }
 
 
+    @Override
+    public Piece copy() {
+        return new Knight(getPieceColor(),
+                new Position(getPosition().getRow(), getPosition().getCol()));
+    }
+
+
 
 }

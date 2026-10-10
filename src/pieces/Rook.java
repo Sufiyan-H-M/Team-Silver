@@ -3,7 +3,7 @@ import game.Board;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rook extends Piece{
+public class Rook extends Piece {
     final String symbol = "R";
 
     public Rook(PieceColor pieceColor, Position position){
@@ -66,6 +66,13 @@ public class Rook extends Piece{
         }
 
         return moveList;
+    }
+
+    // Rook.java
+    @Override
+    public Piece copy() {
+        return new Rook(getPieceColor(),
+                new Position(getPosition().getRow(), getPosition().getCol()));
     }
 
 

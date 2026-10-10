@@ -126,6 +126,11 @@ public class King extends Piece{
 
 
 
+    @Override
+    public Piece copy() {
+        return new King(getPieceColor(),
+                new Position(getPosition().getRow(), getPosition().getCol()));
+    }
 
 
 

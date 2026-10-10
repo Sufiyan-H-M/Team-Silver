@@ -32,15 +32,10 @@ public abstract class Piece {
     }
 
 
-    public Piece copy() {
-        PieceColor enumColor = this.getColor().equals("w")
-                ? PieceColor.WHITE
-                : PieceColor.BLACK;
+    public abstract Piece copy();
 
-        return new King(enumColor, new Position(
-                this.getPosition().getRow(),
-                this.getPosition().getCol()
-        ));
+    protected PieceColor getPieceColor() {
+        return color;
     }
 
 

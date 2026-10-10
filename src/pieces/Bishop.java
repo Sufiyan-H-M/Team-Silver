@@ -88,4 +88,11 @@ public class Bishop extends Piece{
     }
 
 
+    @Override
+    public Piece copy() {
+        return new Bishop(getPieceColor(),
+                new Position(getPosition().getRow(), getPosition().getCol()));
+    }
+
+
 }
