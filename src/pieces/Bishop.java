@@ -4,17 +4,38 @@ import game.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a bishop chess piece and calculates its possible diagonal moves.
+ */
 public class Bishop extends Piece{
     final String symbol = "B";
 
+    /**
+     * Creates a bishop with the specified color and position.
+     *
+     * @param pieceColor the color of the bishop
+     * @param position the initial position of the bishop
+     */
     public Bishop(PieceColor pieceColor, Position position){
         super(pieceColor, position);
     }
 
+    /**
+     * Returns the symbol representing the bishop.
+     *
+     * @return the bishop's symbol
+     */
     public String getSymbol(){
         return symbol;
     }
 
+    /**
+     * Calculates the bishop's possible diagonal moves, including captures
+     * of opposing pieces, while stopping at occupied squares.
+     *
+     * @param board the current chessboard
+     * @return a list of possible destination positions
+     */
     public List<Position> possibleMoves(Board board){
         List<Position> moveList = new ArrayList<>();
         int r = this.getPosition().getRow();
@@ -22,7 +43,6 @@ public class Bishop extends Piece{
 
         Piece[][] temp = board.getGrid();
 
-        // -------- UP-RIGHT --------
         int up = r - 1;
         int right = c + 1;
 
@@ -35,10 +55,9 @@ public class Bishop extends Piece{
                 temp[up][right] != null &&
                 temp[up][right].getColor() != this.getColor()) {
 
-            moveList.add(new Position(up, right)); // capture
+            moveList.add(new Position(up, right));
         }
 
-        // -------- UP-LEFT --------
         up = r - 1;
         int left = c - 1;
 
@@ -51,10 +70,9 @@ public class Bishop extends Piece{
                 temp[up][left] != null &&
                 temp[up][left].getColor() != this.getColor()) {
 
-            moveList.add(new Position(up, left)); // capture
+            moveList.add(new Position(up, left));
         }
 
-        // -------- DOWN-RIGHT --------
         int down = r + 1;
         right = c + 1;
 
@@ -66,10 +84,9 @@ public class Bishop extends Piece{
         if (down < 8 && right < 8 &&
                 temp[down][right] != null &&
                 temp[down][right].getColor() != this.getColor()) {
-            moveList.add(new Position(down, right)); // capture
+            moveList.add(new Position(down, right));
         }
 
-        // -------- DOWN-LEFT --------
         down = r + 1;
         left = c - 1;
 
@@ -82,12 +99,17 @@ public class Bishop extends Piece{
                 temp[down][left] != null &&
                 temp[down][left].getColor() != this.getColor()) {
 
-            moveList.add(new Position(down, left)); // capture
+            moveList.add(new Position(down, left));
         }
         return moveList;
     }
 
 
+    /**
+     * Creates an independent copy of this bishop at the same position.
+     *
+     * @return a copy of this bishop
+     */
     @Override
     public Piece copy() {
         return new Bishop(getPieceColor(),

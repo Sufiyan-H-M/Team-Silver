@@ -3,17 +3,38 @@ import game.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a rook chess piece and calculates its possible moves.
+ */
 public class Rook extends Piece {
     final String symbol = "R";
 
+    /**
+     * Creates a rook with the specified color and position.
+     *
+     * @param pieceColor the color of the rook
+     * @param position the initial position of the rook
+     */
     public Rook(PieceColor pieceColor, Position position){
         super(pieceColor, position);
     }
 
+    /**
+     * Returns the symbol representing the rook.
+     *
+     * @return the rook's symbol
+     */
     public String getSymbol(){
         return symbol;
     }
 
+    /**
+     * Calculates the rook's possible moves along horizontal and vertical
+     * directions, including captures of opposing pieces.
+     *
+     * @param board the current chessboard
+     * @return a list of possible destination positions
+     */
     public List<Position> possibleMoves(Board board){
         List<Position> moveList = new ArrayList<>();
         int r = this.getPosition().getRow();
@@ -21,7 +42,6 @@ public class Rook extends Piece {
 
         Piece[][] temp = board.getGrid();
 
-        // ---------------- UP ----------------
         int u = r - 1;
         while (u >= 0 && temp[u][c] == null) {
             moveList.add(new Position(u, c));
@@ -29,10 +49,9 @@ public class Rook extends Piece {
         }
         if (u >= 0 && temp[u][c] != null &&
                 !temp[u][c].getColor().equals(this.getColor())) {
-            moveList.add(new Position(u, c)); // capture
+            moveList.add(new Position(u, c));
         }
 
-        // ---------------- DOWN ----------------
         int d = r + 1;
         while (d < 8 && temp[d][c] == null) {
             moveList.add(new Position(d, c));
@@ -40,10 +59,9 @@ public class Rook extends Piece {
         }
         if (d < 8 && temp[d][c] != null &&
                 !temp[d][c].getColor().equals(this.getColor())) {
-            moveList.add(new Position(d, c)); // capture
+            moveList.add(new Position(d, c));
         }
 
-        // ---------------- LEFT ----------------
         int l = c - 1;
         while (l >= 0 && temp[r][l] == null) {
             moveList.add(new Position(r, l));
@@ -51,10 +69,9 @@ public class Rook extends Piece {
         }
         if (l >= 0 && temp[r][l] != null &&
                 !temp[r][l].getColor().equals(this.getColor())) {
-            moveList.add(new Position(r, l)); // capture
+            moveList.add(new Position(r, l));
         }
 
-        // ---------------- RIGHT ----------------
         int rr = c + 1;
         while (rr < 8 && temp[r][rr] == null) {
             moveList.add(new Position(r, rr));
@@ -62,13 +79,17 @@ public class Rook extends Piece {
         }
         if (rr < 8 && temp[r][rr] != null &&
                 !temp[r][rr].getColor().equals(this.getColor())) {
-            moveList.add(new Position(r, rr)); // capture
+            moveList.add(new Position(r, rr));
         }
 
         return moveList;
     }
 
-    // Rook.java
+    /**
+     * Creates an independent copy of this rook at the same position.
+     *
+     * @return a copy of this rook
+     */
     @Override
     public Piece copy() {
         return new Rook(getPieceColor(),

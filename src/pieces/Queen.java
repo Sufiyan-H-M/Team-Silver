@@ -4,17 +4,38 @@ import game.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a queen chess piece and calculates its possible moves.
+ */
 public class Queen extends Piece{
     final String symbol = "Q";
 
+    /**
+     * Creates a queen with the specified color and position.
+     *
+     * @param pieceColor the color of the queen
+     * @param position the initial position of the queen
+     */
     public Queen(PieceColor pieceColor, Position position){
         super(pieceColor, position);
     }
 
+    /**
+     * Returns the symbol representing the queen.
+     *
+     * @return the queen's symbol
+     */
     public String getSymbol(){
         return symbol;
     }
 
+    /**
+     * Calculates the queen's possible moves in all horizontal, vertical,
+     * and diagonal directions on the specified board.
+     *
+     * @param board the current chessboard
+     * @return a list of possible destination positions
+     */
     public List<Position> possibleMoves(Board board){
         List<Position> moveList = new ArrayList<>();
         int r = this.getPosition().getRow();
@@ -23,9 +44,6 @@ public class Queen extends Piece{
         Piece[][] temp = board.getGrid();
 
 
-        // ===================== ROOK MOVES =====================
-
-        // -------- UP --------
         int up = r - 1;
         while (up >= 0 && temp[up][c] == null) {
             moveList.add(new Position(up, c));
@@ -36,7 +54,6 @@ public class Queen extends Piece{
             moveList.add(new Position(up, c));
         }
 
-        // -------- DOWN --------
         int down = r + 1;
         while (down < 8 && temp[down][c] == null) {
             moveList.add(new Position(down, c));
@@ -47,7 +64,6 @@ public class Queen extends Piece{
             moveList.add(new Position(down, c));
         }
 
-        // -------- LEFT --------
         int left = c - 1;
         while (left >= 0 && temp[r][left] == null) {
             moveList.add(new Position(r, left));
@@ -58,7 +74,6 @@ public class Queen extends Piece{
             moveList.add(new Position(r, left));
         }
 
-        // -------- RIGHT --------
         int right = c + 1;
         while (right < 8 && temp[r][right] == null) {
             moveList.add(new Position(r, right));
@@ -70,9 +85,6 @@ public class Queen extends Piece{
         }
 
 
-        // ===================== BISHOP MOVES =====================
-
-        // -------- UP-RIGHT --------
         up = r - 1;
         right = c + 1;
         while (up >= 0 && right < 8 && temp[up][right] == null) {
@@ -86,7 +98,6 @@ public class Queen extends Piece{
             moveList.add(new Position(up, right));
         }
 
-        // -------- UP-LEFT --------
         up = r - 1;
         left = c - 1;
         while (up >= 0 && left >= 0 && temp[up][left] == null) {
@@ -100,7 +111,6 @@ public class Queen extends Piece{
             moveList.add(new Position(up, left));
         }
 
-        // -------- DOWN-RIGHT --------
         down = r + 1;
         right = c + 1;
         while (down < 8 && right < 8 && temp[down][right] == null) {
@@ -114,7 +124,6 @@ public class Queen extends Piece{
             moveList.add(new Position(down, right));
         }
 
-        // -------- DOWN-LEFT --------
         down = r + 1;
         left = c - 1;
         while (down < 8 && left >= 0 && temp[down][left] == null) {
@@ -132,6 +141,11 @@ public class Queen extends Piece{
     }
 
 
+    /**
+     * Creates an independent copy of this queen at the same position.
+     *
+     * @return a copy of this queen
+     */
     @Override
     public Piece copy() {
         return new Queen(getPieceColor(),

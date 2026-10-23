@@ -4,17 +4,38 @@ import game.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a king chess piece and calculates its possible moves.
+ */
 public class King extends Piece{
     final String symbol = "K";
 
+    /**
+     * Creates a king with the specified color and position.
+     *
+     * @param pieceColor the color of the king
+     * @param position the initial position of the king
+     */
     public King(PieceColor pieceColor, Position position){
         super(pieceColor, position);
     }
 
+    /**
+     * Returns the symbol representing the king.
+     *
+     * @return the king's symbol
+     */
     public String getSymbol(){
         return symbol;
     }
 
+    /**
+     * Calculates the king's possible moves to adjacent squares, excluding
+     * moves that place it next to the opposing king.
+     *
+     * @param board the current chessboard
+     * @return a list of possible destination positions
+     */
     public List<Position> possibleMoves(Board board) {
         List<Position> moveList = new ArrayList<>();
         int r = this.getPosition().getRow();
@@ -22,7 +43,6 @@ public class King extends Piece{
 
         Piece[][] temp = board.getGrid();
 
-        // UP
         if (r - 1 >= 0) {
             Piece p = temp[r - 1][c];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -30,7 +50,6 @@ public class King extends Piece{
             }
         }
 
-        // DOWN
         if (r + 1 < 8) {
             Piece p = temp[r + 1][c];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -38,7 +57,6 @@ public class King extends Piece{
             }
         }
 
-        // RIGHT
         if (c + 1 < 8) {
             Piece p = temp[r][c + 1];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -46,7 +64,6 @@ public class King extends Piece{
             }
         }
 
-        // LEFT
         if (c - 1 >= 0) {
             Piece p = temp[r][c - 1];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -54,7 +71,6 @@ public class King extends Piece{
             }
         }
 
-        // UP-RIGHT
         if (r - 1 >= 0 && c + 1 < 8) {
             Piece p = temp[r - 1][c + 1];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -62,7 +78,6 @@ public class King extends Piece{
             }
         }
 
-        // UP-LEFT
         if (r - 1 >= 0 && c - 1 >= 0) {
             Piece p = temp[r - 1][c - 1];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -70,7 +85,6 @@ public class King extends Piece{
             }
         }
 
-        // DOWN-RIGHT
         if (r + 1 < 8 && c + 1 < 8) {
             Piece p = temp[r + 1][c + 1];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -78,7 +92,6 @@ public class King extends Piece{
             }
         }
 
-        // DOWN-LEFT
         if (r + 1 < 8 && c - 1 >= 0) {
             Piece p = temp[r + 1][c - 1];
             if (p == null || !p.getColor().equals(this.getColor())) {
@@ -86,14 +99,12 @@ public class King extends Piece{
             }
         }
 
-        // Remove moves that place king next to enemy king
         List<Position> toRemove = new ArrayList<>();
 
         for (Position pos : moveList) {
             int nr = pos.getRow();
             int nc = pos.getCol();
 
-            // Check all 8 surrounding squares for an enemy king
             int[][] kingAdj = {
                     { -1, -1 }, { -1, 0 }, { -1, 1 },
                     {  0, -1 },           {  0, 1 },
@@ -111,28 +122,25 @@ public class King extends Piece{
                             !p.getColor().equals(this.getColor()) &&
                             p.getSymbol().equals("k")) {
 
-                        // This move puts king next to enemy king → illegal
                         toRemove.add(pos);
                     }
                 }
             }
         }
 
-// Remove illegal king-adjacent moves
         moveList.removeAll(toRemove);
 
         return moveList;
     }
 
-
-
+    /**
+     * Creates an independent copy of this king at the same position.
+     *
+     * @return a copy of this king
+     */
     @Override
     public Piece copy() {
         return new King(getPieceColor(),
                 new Position(getPosition().getRow(), getPosition().getCol()));
     }
-
-
-
-
 }

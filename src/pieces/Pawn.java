@@ -5,17 +5,38 @@ import game.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a pawn chess piece and calculates its possible moves.
+ */
 public class Pawn extends Piece{
     final String symbol = "p";
 
+    /**
+     * Creates a pawn with the specified color and position.
+     *
+     * @param pieceColor the color of the pawn
+     * @param position the initial position of the pawn
+     */
     public Pawn(PieceColor pieceColor, Position position){
         super(pieceColor, position);
     }
 
+    /**
+     * Returns the symbol representing the pawn.
+     *
+     * @return the pawn's symbol
+     */
     public String getSymbol(){
         return symbol;
     }
 
+    /**
+     * Calculates the pawn's possible forward moves and diagonal captures
+     * based on its color and current position.
+     *
+     * @param board the current chessboard
+     * @return a list of possible destination positions
+     */
     public List<Position> possibleMoves(Board board) {
         int r = this.getPosition().getRow();
         int c = this.getPosition().getCol();
@@ -24,22 +45,18 @@ public class Pawn extends Piece{
         Piece[][] temp = board.getGrid();
 
         if (super.getColor().equals("w")) {
-            // one step forward
             if (r - 1 >= 0 && temp[r - 1][c] == null) {
                 moveList.add(new Position(r - 1, c));
             }
-            // two steps forward (starting rank = 6)
             if (r == 6 && temp[r - 1][c] == null && temp[r - 2][c] == null) {
                 moveList.add(new Position(r - 2, c));
             }
-            // capture right
             if (r - 1 >= 0 && c + 1 < 8 &&
                     temp[r - 1][c + 1] != null &&
                     temp[r - 1][c + 1].getColor().equals("b")) {
 
                 moveList.add(new Position(r - 1, c + 1));
             }
-            // capture left
             if (r - 1 >= 0 && c - 1 >= 0 &&
                     temp[r - 1][c - 1] != null &&
                     temp[r - 1][c - 1].getColor().equals("b")) {
@@ -47,17 +64,14 @@ public class Pawn extends Piece{
                 moveList.add(new Position(r - 1, c - 1));
             }
         } else{
-            // one step forward
             if (r + 1 < 8 && temp[r + 1][c] == null) {
                 moveList.add(new Position(r + 1, c));
             }
 
-            // two steps forward (starting rank = 1)
             if (r == 1 && temp[r + 1][c] == null && temp[r + 2][c] == null) {
                 moveList.add(new Position(r + 2, c));
             }
 
-            // capture right (down-right)
             if (r + 1 < 8 && c + 1 < 8 &&
                     temp[r + 1][c + 1] != null &&
                     temp[r + 1][c + 1].getColor().equals("w")) {
@@ -65,7 +79,6 @@ public class Pawn extends Piece{
                 moveList.add(new Position(r + 1, c + 1));
             }
 
-            // capture left (down-left)
             if (r + 1 < 8 && c - 1 >= 0 &&
                     temp[r + 1][c - 1] != null &&
                     temp[r + 1][c - 1].getColor().equals("w")) {
@@ -76,7 +89,11 @@ public class Pawn extends Piece{
         return moveList;
     }
 
-    // Rook.java
+    /**
+     * Creates an independent copy of this pawn at the same position.
+     *
+     * @return a copy of this pawn
+     */
     @Override
     public Piece copy() {
         return new Pawn(getPieceColor(),
