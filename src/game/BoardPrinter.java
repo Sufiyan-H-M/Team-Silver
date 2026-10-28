@@ -16,6 +16,7 @@ public class BoardPrinter {
     public void print(Board board) {
         Piece[][] grid = board.getGrid();
 
+        System.out.println();
         System.out.println(board.WHITE_BACKGROUND + board.BLACK_TEXT + "   A  B  C  D  E  F  G  H  " + board.RESET);
         for (int i = 0; i < 8; i++) {
             System.out.print(board.WHITE_BACKGROUND + board.BLACK_TEXT + " ");

@@ -45,7 +45,7 @@ public class MoveHandler {
         Position src = parseSquare(from);
         Position dst = parseSquare(to);
         if (src == null || dst == null) {
-            System.out.println(board.BG_YELLOW + " Invalid square. Use a-h and 1-8, e.g. e2 e4 " + board.RESET);
+            System.out.println(board.BG_YELLOW +board.FG_WHITE+ " Invalid square. Use a-h and 1-8, e.g. e2 e4 " + board.RESET);
             return false;
         }
         int oldRow = src.getRow(), oldCol = src.getCol();
@@ -54,15 +54,16 @@ public class MoveHandler {
         Piece[][] grid = board.getGrid();
         Piece piece = grid[oldRow][oldCol];
         if (piece == null) {
-            System.out.println(board.BG_YELLOW + " No piece at " + from +" "+ board.RESET);
+            System.out.println(board.BG_YELLOW + board.FG_WHITE +" No piece at " + from +" "+ board.RESET);
             return false;
         }
         if (!piece.getColor().equals(turnColor)) {
-            System.out.println(board.BG_YELLOW + " Not your piece " + board.RESET);
+            System.out.println(board.BG_YELLOW + board.FG_WHITE +" Not your piece " + board.RESET);
             return false;
         }
 
         boolean reachable = false;
+        String captureText = "";
         for (Position p : piece.possibleMoves(board)) {
             if (p.getRow() == newRow && p.getCol() == newCol) {
                 reachable = true;
@@ -88,29 +89,28 @@ public class MoveHandler {
                             sym = "Rook";
                             break;
                     }
-                    board.getCaptures().add("captures " +
-                            (grid[dst.getRow()][dst.getCol()].getColor()=="b" ? "Black " : "White ") + sym);
-                } else{
-                    board.getCaptures().add("");
+                    captureText = "captures " +
+                            (grid[dst.getRow()][dst.getCol()].getColor().equals("b") ? "Black " : "White ") + sym;
                 }
-                board.getMoveList().add(new Position[]{src, dst});
                 break;
             }
         }
         if (!reachable) {
-            System.out.println(board.BG_ORANGE + " Illegal move (not in move list) " + board.RESET);
+            System.out.println(board.BG_ORANGE + board.FG_WHITE +" Illegal move (not in move list) " + board.RESET);
             return false;
         }
 
         if (!board.leavesKingSafe(oldRow, oldCol, newRow, newCol, turnColor)) {
             if (board.isInCheck(turnColor)) {
-                System.out.println(board.BG_RED + " Illegal move: you must escape check " + board.RESET);
+                System.out.println(board.BG_RED + board.FG_WHITE +" Illegal move: you must escape check " + board.RESET);
             } else {
-                System.out.println(board.BG_RED + " Illegal move: your king would be in check " + board.RESET);
+                System.out.println(board.BG_RED + board.FG_WHITE +" Illegal move: your king would be in check " + board.RESET);
             }
             return false;
         }
 
+        board.getCaptures().add(captureText);
+        board.getMoveList().add(new Position[]{src, dst});
         board.applyMoveWithoutCheck(oldRow, oldCol, newRow, newCol);
         return true;
     }
