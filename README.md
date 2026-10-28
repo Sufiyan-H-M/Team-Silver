@@ -53,8 +53,6 @@ ChessProject/
     └── index.html
 ```
 
-_Note: The structure above is illustrative. Adjust the filenames and folders to match your actual project._
-
 ## Requirements
 
 - Java Development Kit (JDK) installed.
