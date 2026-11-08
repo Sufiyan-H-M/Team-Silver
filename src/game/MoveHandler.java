@@ -5,6 +5,8 @@ import pieces.*;
 /**
  * Handles chess moves by validating input, checking piece movement rules,
  * recording captures and moves, and ensuring the king remains safe.
+ * Instead of printing messages, it reports the outcome of every attempt as a
+ * {@link MoveResult}, so that any client can decide how to display it.
  */
 public class MoveHandler {
     private final Board board;
@@ -34,19 +36,23 @@ public class MoveHandler {
     }
 
     /**
-     * Attempts to move a piece from one square to another.
+     * Attempts to move a piece from one square to another. The move is
+     * checked for valid squares, piece ownership, the piece's movement rules,
+     * and king safety. If every check passes, the capture and the move are
+     * recorded and the move is applied to the board. If any check fails, the
+     * board and its history are left unchanged.
      *
      * @param from the starting square in chess notation
      * @param to the destination square in chess notation
      * @param turnColor the color of the player making the move
-     * @return {@code true} if the move is successful; {@code false} otherwise
+     * @return {@link MoveResult#ACCEPTED} if the move was applied, otherwise
+     *         the {@link MoveResult} explaining why it was rejected
      */
-    public boolean makeMove(String from, String to, String turnColor) {
+    public MoveResult makeMove(String from, String to, String turnColor) {
         Position src = parseSquare(from);
         Position dst = parseSquare(to);
         if (src == null || dst == null) {
-            System.out.println(board.BG_YELLOW +board.FG_WHITE+ " Invalid square. Use a-h and 1-8, e.g. e2 e4 " + board.RESET);
-            return false;
+            return MoveResult.INVALID_SQUARE;
         }
         int oldRow = src.getRow(), oldCol = src.getCol();
         int newRow = dst.getRow(), newCol = dst.getCol();
@@ -54,12 +60,10 @@ public class MoveHandler {
         Piece[][] grid = board.getGrid();
         Piece piece = grid[oldRow][oldCol];
         if (piece == null) {
-            System.out.println(board.BG_YELLOW + board.FG_WHITE +" No piece at " + from +" "+ board.RESET);
-            return false;
+            return MoveResult.NO_PIECE_AT_POSITION;
         }
         if (!piece.getColor().equals(turnColor)) {
-            System.out.println(board.BG_YELLOW + board.FG_WHITE +" Not your piece " + board.RESET);
-            return false;
+            return MoveResult.NOT_YOUR_PIECE;
         }
 
         boolean reachable = false;
@@ -96,22 +100,21 @@ public class MoveHandler {
             }
         }
         if (!reachable) {
-            System.out.println(board.BG_ORANGE + board.FG_WHITE +" Illegal move (not in move list) " + board.RESET);
-            return false;
+            return MoveResult.ILLEGAL_MOVE;
         }
 
         if (!board.leavesKingSafe(oldRow, oldCol, newRow, newCol, turnColor)) {
             if (board.isInCheck(turnColor)) {
-                System.out.println(board.BG_RED + board.FG_WHITE +" Illegal move: you must escape check " + board.RESET);
+                return MoveResult.ESCAPE_CHECK;
             } else {
-                System.out.println(board.BG_RED + board.FG_WHITE +" Illegal move: your king would be in check " + board.RESET);
+                return MoveResult.PUTS_KING_IN_CHECK;
             }
-            return false;
         }
 
         board.getCaptures().add(captureText);
         board.getMoveList().add(new Position[]{src, dst});
         board.applyMoveWithoutCheck(oldRow, oldCol, newRow, newCol);
-        return true;
+
+        return MoveResult.ACCEPTED;
     }
 }

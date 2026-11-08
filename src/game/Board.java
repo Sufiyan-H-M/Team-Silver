@@ -13,21 +13,6 @@ public class Board {
     private List<Position[]> trackedMoveList = new ArrayList<>();
     private List<String> trackCaptures = new ArrayList<>();
 
-    String BG_RED    = "\u001B[41m";
-    String BG_YELLOW = "\u001B[43m";
-    String BG_ORANGE = "\u001B[48;5;208m";
-
-    String BLACK_TEXT = "\u001B[30m";
-    String WHITE_BACKGROUND = "\u001B[107m";
-
-    String FG_BLACK = "\u001B[30m";
-    String FG_WHITE = "\u001B[97m";
-
-    String BG_MAROON = "\u001B[48;5;88m";
-    String BG_TUSK = "\u001B[48;5;230m";
-
-    String RESET = "\u001B[0m";
-
     /**
      * Creates a board and initializes the pieces in their starting positions.
      */
@@ -197,9 +182,10 @@ public class Board {
      * @param from the starting position in chess notation
      * @param to the destination position in chess notation
      * @param turnColor the color of the player making the move
-     * @return {@code true} if the move succeeds; {@code false} otherwise
+     * @return {@link MoveResult#ACCEPTED} if the move was applied, otherwise
+     *         the {@link MoveResult} explaining why it was rejected
      */
-    public boolean makeMove(String from, String to, String turnColor) {
+    public MoveResult makeMove(String from, String to, String turnColor) {
         return new MoveHandler(this).makeMove(from, to, turnColor);
     }
 }

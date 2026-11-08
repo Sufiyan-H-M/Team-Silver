@@ -9,7 +9,11 @@ import pieces.*;
 public class BoardPrinter {
 
     /**
-     * Prints the current board, its coordinates, and the tracked moves and captures.
+     * Prints the board to standard output as an 8x8 grid labeled with files
+     * (A-H) and ranks (8-1). Each occupied square shows the piece's color
+     * letter followed by its symbol, for example {@code wp} or {@code bK}.
+     * After the grid, prints one line for every move in the board's move
+     * history, including the captured piece when there was one.
      *
      * @param board the board to print
      */
@@ -17,23 +21,19 @@ public class BoardPrinter {
         Piece[][] grid = board.getGrid();
 
         System.out.println();
-        System.out.println(board.WHITE_BACKGROUND + board.BLACK_TEXT + "   A  B  C  D  E  F  G  H  " + board.RESET);
+        System.out.println("   A  B  C  D  E  F  G  H  ");
         for (int i = 0; i < 8; i++) {
-            System.out.print(board.WHITE_BACKGROUND + board.BLACK_TEXT + " ");
+            System.out.print(" ");
             System.out.print(8 - i + " ");
-            System.out.print(board.RESET);
+
 
             for (int j = 0; j < 8; j++) {
-                String bg = ((i + j) % 2 == 0)
-                        ? board.BG_TUSK + board.FG_BLACK
-                        : board.BG_MAROON + board.FG_WHITE ;
-
                 if (grid[i][j] == null) {
-                    System.out.print(bg + "   " + board.RESET);
+                    System.out.print("   ");
                 } else {
                     System.out.print(
-                            bg  + grid[i][j].getColor() +
-                                    grid[i][j].getSymbol() + " " + board.RESET
+                           grid[i][j].getColor() +
+                                    grid[i][j].getSymbol() + " "
                     );
                 }
             }
@@ -52,7 +52,7 @@ public class BoardPrinter {
             System.out.println(
                     "From: " + board.convertToChessNotation(move[0]) +
                             " To: " + board.convertToChessNotation(move[1]) +
-                            (capture == "" ? "" : ("| Capture: " + capture))
+                            (capture.equals("") ? "" : ("| Capture: " + capture))
             );
         }
 
