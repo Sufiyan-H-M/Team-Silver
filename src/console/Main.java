@@ -24,6 +24,7 @@ public class Main{
 //        System.out.println(game.makeMove("d8", "h4") + " status=" + game.getStatus());
 //        System.out.println(game.makeMove("a2", "a3"));
 
-        ChessFrame chess = new ChessFrame();
+        ChessFrame frame = new ChessFrame();
+        frame.setVisible(true);
     }
 }
