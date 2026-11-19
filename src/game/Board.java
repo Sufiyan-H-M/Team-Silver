@@ -152,6 +152,7 @@ public class Board {
                 if (p != null) {
                     Piece cp = p.copy();
                     cp.setPosition(new Position(r, c));
+                    cp.setHasMoved(p.hasMoved());
                     clone.grid[r][c] = cp;
                 }
             }
@@ -173,7 +174,20 @@ public class Board {
         grid[oldRow][oldCol] = null;
         if (moving != null) {
             moving.setPosition(new Position(newRow, newCol));
+            moving.setHasMoved(true);
         }
+    }
+
+    /**
+     * Determines whether a square is attacked by any piece of the given color.
+     *
+     * @param r the row of the square
+     * @param c the column of the square
+     * @param byColor the color of the attacking pieces
+     * @return {@code true} if the square is attacked
+     */
+    public boolean isSquareAttacked(int r, int c, String byColor) {
+        return new CheckValidator(this).isSquareAttacked(r, c, byColor);
     }
 
     /**

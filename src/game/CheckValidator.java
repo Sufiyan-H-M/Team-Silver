@@ -46,7 +46,7 @@ public class CheckValidator {
      * @param byColor the color of the attacking pieces
      * @return {@code true} if the square is attacked; {@code false} otherwise
      */
-    private boolean isSquareAttacked(int r, int c, String byColor) {
+    public boolean isSquareAttacked(int r, int c, String byColor) {
 
         int pawnRow = byColor.equals("b") ? r - 1 : r + 1;
         for (int dc = -1; dc <= 1; dc += 2) {

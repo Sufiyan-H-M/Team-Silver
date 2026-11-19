@@ -11,6 +11,7 @@ public abstract class Piece {
 
     private Position position;
     private PieceColor color;
+    private boolean hasMoved;
 
     /**
      * Creates a piece with the specified color and position.
@@ -70,6 +71,24 @@ public abstract class Piece {
      */
     public abstract String getSymbol();
 
+    /**
+     * Returns whether this piece has moved since the game started. Castling
+     * depends on this for kings and rooks.
+     *
+     * @return {@code true} if the piece has moved
+     */
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    /**
+     * Sets whether this piece has moved.
+     *
+     * @param moved {@code true} if the piece has moved
+     */
+    public void setHasMoved(boolean moved) {
+        hasMoved = moved;
+    }
     /**
      * Creates an independent copy of this piece.
      *

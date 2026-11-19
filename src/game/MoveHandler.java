@@ -149,6 +149,13 @@ public class MoveHandler {
         board.getMoveList().add(new Position[]{src, dst});
         board.applyMoveWithoutCheck(oldRow, oldCol, newRow, newCol);
 
+        // Castling: the king moved two squares, so the rook moves too
+        if (piece instanceof King && Math.abs(newCol - oldCol) == 2) {
+            int rookFrom = newCol > oldCol ? 7 : 0;
+            int rookTo = newCol > oldCol ? 5 : 3;
+            board.applyMoveWithoutCheck(oldRow, rookFrom, oldRow, rookTo);
+        }
+
         // Promote a pawn that reached the last rank
         Piece moved = grid[newRow][newCol];
         if (moved instanceof Pawn && (newRow == 0 || newRow == 7)) {
