@@ -177,7 +177,8 @@ public class Board {
     }
 
     /**
-     * Attempts to make a move from one chess position to another.
+     * Attempts to make a move from one chess position to another. A pawn that
+     * reaches the last rank is promoted to a queen.
      *
      * @param from the starting position in chess notation
      * @param to the destination position in chess notation
@@ -186,6 +187,22 @@ public class Board {
      *         the {@link MoveResult} explaining why it was rejected
      */
     public MoveResult makeMove(String from, String to, String turnColor) {
-        return new MoveHandler(this).makeMove(from, to, turnColor);
+        return makeMove(from, to, turnColor, null);
+    }
+
+    /**
+     * Attempts to make a move from one chess position to another, promoting a
+     * pawn that reaches the last rank to the requested piece.
+     *
+     * @param from the starting position in chess notation
+     * @param to the destination position in chess notation
+     * @param turnColor the color of the player making the move
+     * @param promotion the promotion piece ({@code "Q"}, {@code "R"},
+     *                  {@code "B"} or {@code "N"}), or {@code null} for a queen
+     * @return {@link MoveResult#ACCEPTED} if the move was applied, otherwise
+     *         the {@link MoveResult} explaining why it was rejected
+     */
+    public MoveResult makeMove(String from, String to, String turnColor, String promotion) {
+        return new MoveHandler(this).makeMove(from, to, turnColor, promotion);
     }
 }

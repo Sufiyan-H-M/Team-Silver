@@ -16,6 +16,7 @@ public class ChessApp {
         SwingUtilities.invokeLater(() -> {
             ChessFrame frame = new ChessFrame();
             frame.setVisible(true);
+            frame.setLocationRelativeTo(null);
         });
     }
 }

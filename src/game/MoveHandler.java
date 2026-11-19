@@ -4,7 +4,8 @@ import pieces.*;
 
 /**
  * Handles chess moves by validating input, checking piece movement rules,
- * recording captures and moves, and ensuring the king remains safe.
+ * recording captures and moves, promoting pawns, and ensuring the king
+ * remains safe.
  * Instead of printing messages, it reports the outcome of every attempt as a
  * {@link MoveResult}, so that any client can decide how to display it.
  */
@@ -36,11 +37,23 @@ public class MoveHandler {
     }
 
     /**
-     * Attempts to move a piece from one square to another. The move is
-     * checked for valid squares, piece ownership, the piece's movement rules,
-     * and king safety. If every check passes, the capture and the move are
-     * recorded and the move is applied to the board. If any check fails, the
-     * board and its history are left unchanged.
+     * Creates the piece a pawn is promoted to.
+     *
+     * @param type {@code "R"}, {@code "B"} or {@code "N"}; anything else gives a queen
+     * @param color the color of the new piece
+     * @param pos the position of the new piece
+     * @return the new piece
+     */
+    private Piece createPiece(String type, PieceColor color, Position pos) {
+        if ("R".equals(type)) return new Rook(color, pos);
+        if ("B".equals(type)) return new Bishop(color, pos);
+        if ("N".equals(type)) return new Knight(color, pos);
+        return new Queen(color, pos);
+    }
+
+    /**
+     * Attempts to move a piece from one square to another. A pawn that
+     * reaches the last rank is promoted to a queen.
      *
      * @param from the starting square in chess notation
      * @param to the destination square in chess notation
@@ -49,6 +62,27 @@ public class MoveHandler {
      *         the {@link MoveResult} explaining why it was rejected
      */
     public MoveResult makeMove(String from, String to, String turnColor) {
+        return makeMove(from, to, turnColor, null);
+    }
+
+    /**
+     * Attempts to move a piece from one square to another. The move is
+     * checked for valid squares, piece ownership, the piece's movement rules,
+     * and king safety. If every check passes, the capture and the move are
+     * recorded and the move is applied to the board, and a pawn that reaches
+     * the last rank is replaced by the requested piece. If any check fails,
+     * the board and its history are left unchanged.
+     *
+     * @param from the starting square in chess notation
+     * @param to the destination square in chess notation
+     * @param turnColor the color of the player making the move
+     * @param promotion the promotion piece ({@code "Q"}, {@code "R"},
+     *                  {@code "B"} or {@code "N"}), or {@code null} to
+     *                  default to a queen
+     * @return {@link MoveResult#ACCEPTED} if the move was applied, otherwise
+     *         the {@link MoveResult} explaining why it was rejected
+     */
+    public MoveResult makeMove(String from, String to, String turnColor, String promotion) {
         Position src = parseSquare(from);
         Position dst = parseSquare(to);
         if (src == null || dst == null) {
@@ -114,6 +148,13 @@ public class MoveHandler {
         board.getCaptures().add(captureText);
         board.getMoveList().add(new Position[]{src, dst});
         board.applyMoveWithoutCheck(oldRow, oldCol, newRow, newCol);
+
+        // Promote a pawn that reached the last rank
+        Piece moved = grid[newRow][newCol];
+        if (moved instanceof Pawn && (newRow == 0 || newRow == 7)) {
+            PieceColor color = moved.getColor().equals("w") ? PieceColor.WHITE : PieceColor.BLACK;
+            grid[newRow][newCol] = createPiece(promotion, color, new Position(newRow, newCol));
+        }
 
         return MoveResult.ACCEPTED;
     }

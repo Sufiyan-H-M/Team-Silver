@@ -1,4 +1,5 @@
 package gui;
+
 import game.Board;
 import game.Game;
 import game.MoveResult;
@@ -6,15 +7,18 @@ import game.Status;
 import pieces.Piece;
 import pieces.Position;
 
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
+/**
+ * The main window of the chess application. It draws the board, translates
+ * mouse clicks into moves on the {@link Game}, and keeps the display in sync
+ * with the game state.
+ */
 public class ChessFrame extends JFrame {
 
     private final Game game = new Game();
@@ -36,7 +40,9 @@ public class ChessFrame extends JFrame {
 
     private Position from;
 
-
+    /**
+     * Creates the window, builds the board of buttons, and shows it.
+     */
     public ChessFrame(){
         this.setTitle("Java Chess");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,6 +96,9 @@ public class ChessFrame extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Builds the Game menu with Restart and Exit items.
+     */
     public void initMenu() {
         restartItem.addActionListener(e -> {
             game.restart();
@@ -109,12 +118,17 @@ public class ChessFrame extends JFrame {
         setJMenuBar(menu);
     }
 
-
-
+    /**
+     * Marks the squares the piece on the given square can move to: a circle
+     * on empty squares and a red background on captures.
+     *
+     * @param r the row of the selected piece
+     * @param c the column of the selected piece
+     */
     private void updatePossibleMoves(int r, int c){
         refresh();// clears the old possible moves
 
-        java.util.List<Position> moves= new ArrayList<>();
+        java.util.List<Position> moves = new ArrayList<>();
         moves = game.getBoard().getGrid()[r][c].possibleMoves(game.getBoard());
 
         if(moves == null){
@@ -131,6 +145,9 @@ public class ChessFrame extends JFrame {
 
     }
 
+    /**
+     * Resets every square to its normal color, highlighting the selected one.
+     */
     private void updateSquareColors() {
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
@@ -139,6 +156,14 @@ public class ChessFrame extends JFrame {
         }
     }
 
+    /**
+     * Returns the background color of a square, using a lighter shade when
+     * it is the selected square.
+     *
+     * @param r the row of the square
+     * @param c the column of the square
+     * @return the color to use
+     */
     private Color squareColor(int r, int c){
         Color color;
         if((r + c) % 2 == 0){
@@ -158,6 +183,14 @@ public class ChessFrame extends JFrame {
         return color;
     }
 
+    /**
+     * Handles a click on a square. The first click selects a piece and the
+     * second click tries to move it, asking for a promotion piece when a
+     * pawn reaches the last rank.
+     *
+     * @param row the row of the clicked square
+     * @param col the column of the clicked square
+     */
     private void handleClick(int row, int col){
         if(game.getStatus() == Status.CHECKMATE || game.getStatus() == Status.STALEMATE){
             return;
@@ -177,6 +210,7 @@ public class ChessFrame extends JFrame {
         if (from.getRow() == row && from.getCol() == col) {
             from = null;
             updateSquareColors();
+            refresh();   // removes the move hints
             return;
         }
 
@@ -189,20 +223,50 @@ public class ChessFrame extends JFrame {
         }
 
         // Second click: try the move
-        String fromSquare = board.convertToChessNotation(from);
-        String toSquare = board.convertToChessNotation(new Position(row, col));
+        Position start = from;
+        Position to = new Position(row, col);
+        String fromSquare = board.convertToChessNotation(start);
+        String toSquare = board.convertToChessNotation(to);
         from = null;
         updateSquareColors();
 
-        MoveResult result = game.makeMove(fromSquare, toSquare);
+        String promotion = null;
+        if (game.isPromotionMove(start, to)) {
+            promotion = askPromotion();
+            if (promotion == null) {      // dialog closed: cancel the move
+                refresh();
+                return;
+            }
+        }
+
+        MoveResult result = game.makeMove(fromSquare, toSquare, promotion);
+        refresh();   // always redraw, which also removes the move hints
         if (result == MoveResult.ACCEPTED) {
-            refresh();
             updateStatus();
         } else {
             JOptionPane.showMessageDialog(this, result.getMessage());
         }
     }
 
+    /**
+     * Asks the player which piece a promoted pawn should become.
+     *
+     * @return {@code "Q"}, {@code "R"}, {@code "B"} or {@code "N"}, or
+     *         {@code null} if the dialog was closed
+     */
+    private String askPromotion() {
+        String[] names = {"Queen", "Rook", "Bishop", "Knight"};
+        String[] codes = {"Q", "R", "B", "N"};
+        int choice = JOptionPane.showOptionDialog(this,
+                "Promote pawn to:", "Pawn Promotion",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, names, names[0]);
+        return choice < 0 ? null : codes[choice];
+    }
+
+    /**
+     * Loads and scales the piece images and the move-hint circle once.
+     */
     private void loadIcons(){
         String[] colors = {"w", "b"};
         String[] types = {"K", "Q", "R", "B", "N", "p"};
@@ -231,6 +295,9 @@ public class ChessFrame extends JFrame {
         }
     }
 
+    /**
+     * Redraws every square from the current game state.
+     */
     private void refresh(){
         Piece[][] grid = game.getBoard().getGrid();
 
@@ -248,6 +315,9 @@ public class ChessFrame extends JFrame {
         }
     }
 
+    /**
+     * Updates the status label from the game's turn and status.
+     */
     private void updateStatus() {
         String player = game.getTurn().equals("w") ? "White" : "Black";
 
